@@ -1,0 +1,68 @@
+@import 'tailwindcss' source(none);
+@source '../index.html';
+@source './';
+
+@theme {
+  --color-paper: #f6f5f2;
+  --color-card: #ffffff;
+  --color-sunk: #ecebe6;
+  --color-ink: #151515;
+  --color-ink2: #46443f;
+  --color-ink3: #67645e;
+  --color-line: #d8d6cf;
+  --color-line2: #8a877f; /* 3.3:1+ on paper and white: used for control edges */
+  --font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --shadow-soft: 0 1px 0 rgb(21 21 21 / 0.04), 0 12px 32px -12px rgb(21 21 21 / 0.14);
+}
+
+html {
+  font-size: var(--base, 100%);
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: var(--color-ink); color: var(--color-paper); }
+
+:focus-visible:not([tabindex='-1']) {
+  outline: 3px solid var(--color-ink);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+.on-dark :focus-visible:not([tabindex='-1']) { outline-color: var(--color-paper); }
+
+/* Subtle paper grain, purely decorative */
+body::before {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image: radial-gradient(rgb(21 21 21 / 0.045) 1px, transparent 1px);
+  background-size: 22px 22px;
+  mask-image: linear-gradient(to bottom, #000, transparent 70%);
+  -webkit-mask-image: linear-gradient(to bottom, #000, transparent 70%);
+}
+
+/* ---- Motion ---- */
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes draw { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
+@keyframes pop { 0% { transform: scale(.6); opacity: 0 } 70% { transform: scale(1.08) } 100% { transform: scale(1); opacity: 1 } }
+.rise { animation: rise .5s cubic-bezier(.2,.7,.2,1) both; }
+.fade { animation: fade .4s ease both; }
+.pop { animation: pop .45s cubic-bezier(.2,.7,.2,1) both; }
+.draw { stroke-dasharray: 100; animation: draw .7s .15s ease-out both; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; animation-delay: 0s !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
+}
+
+/* ---- Print: the receipt is the document ---- */
+@media print {
+  body::before, .no-print { display: none !important; }
+  body { background: #fff; }
+  .print-card { box-shadow: none !important; border: 1px solid #999 !important; }
+}
